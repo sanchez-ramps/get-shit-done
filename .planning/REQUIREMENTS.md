@@ -116,6 +116,26 @@ Enable collaborative multi-developer workflows by integrating GSD commands with 
   - Team velocity (via Jira)
   - GSD↔Jira coverage
 
+### GIT: Git/Jira Integration
+
+- [ ] **GIT-01**: Auto-create feature branches with Jira issue key
+  - Branch naming: `feature/PROJ-123-phase-name` or `feature/PROJ-123-plan-name`
+  - Create branch when starting work on phase/plan
+  - Support configurable branch prefix (feature/, bugfix/, etc.)
+- [ ] **GIT-02**: Include Jira issue key in commit messages
+  - Auto-prepend issue key to commits
+  - Support commit templates
+  - Enable Jira auto-linking via issue key in message
+- [ ] **GIT-03**: Smart commit keywords for Jira transitions
+  - `PROJ-123 #in-progress` — transition to In Progress
+  - `PROJ-123 #done` — transition to Done
+  - `PROJ-123 #comment "message"` — add comment
+  - `PROJ-123 #time 2h` — log time
+- [ ] **GIT-04**: PR titles/descriptions include Jira links
+  - Auto-generate PR title with issue key
+  - Include Jira link in PR description
+  - Support PR templates with Jira placeholders
+
 ### DOCS: Documentation
 
 - [ ] **DOCS-01**: Setup guide
@@ -176,9 +196,13 @@ Enable collaborative multi-developer workflows by integrating GSD commands with 
 | SPRINT-04 | 5 | Roadmapped |
 | REPORT-01 | 6 | Roadmapped |
 | REPORT-02 | 6 | Roadmapped |
+| GIT-01 | 2 | Roadmapped |
+| GIT-02 | 3 | Roadmapped |
+| GIT-03 | 3 | Roadmapped |
+| GIT-04 | 3 | Roadmapped |
 | DOCS-01 | 6 | Roadmapped |
 | DOCS-02 | 6 | Roadmapped |
 
 ---
 *Requirements defined: 2026-01-31*
-*Roadmapped: 2026-01-31 (26/26 mapped to 6 phases)*
+*Roadmapped: 2026-01-31 (30/30 mapped to 6 phases)*
