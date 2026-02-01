@@ -156,6 +156,7 @@ Enable collaborative multi-developer workflows by integrating GSD commands with 
 - Kanban board support
 - Custom field mapping UI
 - Webhook-based real-time sync
+- Configurable execution progress comments (plan started/completed, optional per-task updates)
 
 ---
 
@@ -172,11 +173,11 @@ Enable collaborative multi-developer workflows by integrating GSD commands with 
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| SPEC-01 | 1 | Roadmapped |
-| SPEC-02 | 1 | Roadmapped |
+| SPEC-01 | 1 | Complete |
+| SPEC-02 | 1 | Complete |
 | SPEC-03 | 4 | Roadmapped |
 | SPEC-04 | 6 | Roadmapped |
-| CLI-01 | 1 | Roadmapped |
+| CLI-01 | 1 | Complete |
 | CLI-02 | 2 | Roadmapped |
 | CLI-03 | 2 | Roadmapped |
 | CLI-04 | 3 | Roadmapped |
