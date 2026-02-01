@@ -44,13 +44,13 @@ Plans:
   4. New phases automatically create Jira Epics with linked Stories
   5. Hierarchy relationships preserved (Initiative → Epic → Story)
   6. Feature branches auto-created with Jira issue key (e.g., `feature/PROJ-123-phase-name`)
-**Plans**: TBD
+**Plans**: 4 plans (Wave 1: 1, Wave 2: 3)
 
 Plans:
-- [ ] 02-01: Sync engine core with GSD artifact parsing
-- [ ] 02-02: gsd:jira-sync and gsd:jira-status commands
-- [ ] 02-03: Auto-sync hooks for new-milestone and plan-phase
-- [ ] 02-04: Git branch creation with Jira issue keys
+- [ ] 02-01-PLAN.md — Sync engine core with state management and Jira hierarchy
+- [ ] 02-02-PLAN.md — gsd:jira-status command for sync visibility
+- [ ] 02-03-PLAN.md — Auto-sync hooks for new-milestone and add-phase
+- [ ] 02-04-PLAN.md — Feature branch creation with Jira issue keys
 
 ### Phase 3: Execution Integration
 **Goal**: Integrate Jira updates into GSD execution workflow with Git integration
