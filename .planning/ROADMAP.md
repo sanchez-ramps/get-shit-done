@@ -10,7 +10,7 @@ This roadmap delivers bidirectional sync between GSD workflow artifacts and Jira
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Foundation** - Configuration schema and CLI scaffold with acli integration
+- [x] **Phase 1: Foundation** - Configuration schema and CLI scaffold with acli integration
 - [ ] **Phase 2: Push Sync** - GSD → Jira sync with auto-creation hooks
 - [ ] **Phase 3: Execution Integration** - GSD commands trigger Jira updates
 - [ ] **Phase 4: Bidirectional Sync** - Jira → GSD pull with conflict resolution
@@ -31,7 +31,7 @@ This roadmap delivers bidirectional sync between GSD workflow artifacts and Jira
 **Plans**: 1 plan
 
 Plans:
-- [ ] 01-01-PLAN.md — Create gsd:jira-init command with full init flow
+- [x] 01-01-PLAN.md — Create gsd:jira-init command with full init flow
 
 ### Phase 2: Push Sync
 **Goal**: Enable GSD → Jira push sync with automatic creation hooks and branch creation
@@ -131,7 +131,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/1 | Not started | - |
+| 1. Foundation | 1/1 | Complete | 2026-02-01 |
 | 2. Push Sync | 0/4 | Not started | - |
 | 3. Execution Integration | 0/5 | Not started | - |
 | 4. Bidirectional Sync | 0/3 | Not started | - |
