@@ -28,23 +28,80 @@ Check if Jira configuration already exists:
 
 ```bash
 ls .planning/jira/config.yaml 2>/dev/null
+ls .planning/jira/mapping.yaml 2>/dev/null
 ```
 
-**If config exists:**
+**Case A: Both config.yaml and mapping.yaml exist (Full config):**
+
+Read and display current configuration:
+
+```bash
+cat .planning/jira/config.yaml
+```
+
+Display current settings:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSD ► JIRA — EXISTING CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+| Setting  | Current Value                  |
+|----------|--------------------------------|
+| Site     | {current site URL}             |
+| Project  | {current project key/name}     |
+| Board    | {current board name}           |
+```
 
 Use AskUserQuestion:
-- header: "Existing Configuration"
+- header: "Re-initialize"
 - question: "Jira configuration already exists. What would you like to do?"
 - options:
-  - "Re-initialize" — Start fresh with new project/board selection
+  - "Re-initialize completely" — Start fresh with new project/board selection
   - "Update mapping only" — Keep project/board, reconfigure issue type mapping
+  - "View current config" — Show full configuration details
   - "Cancel" — Exit without changes
 
-**If "Re-initialize":** Continue to step 2.
-**If "Update mapping only":** Skip to step 5.
+**If "Re-initialize completely":** Continue to step 2.
+**If "Update mapping only":** Read existing config.yaml for project info, skip to step 6.
+**If "View current config":** 
+  - Display full config.yaml and mapping.yaml contents
+  - Re-prompt with same options
 **If "Cancel":** Exit command.
 
-**If config doesn't exist:** Continue to step 2.
+**Case B: Only config.yaml exists (Partial config):**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSD ► JIRA — INCOMPLETE CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Found config.yaml but mapping.yaml is missing.
+This may be from an interrupted initialization.
+
+Completing setup with existing project/board...
+```
+
+Read existing config.yaml, extract project/board info, skip to step 6.
+
+**Case C: Only mapping.yaml exists (Invalid state):**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSD ► JIRA — INVALID CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Found mapping.yaml but config.yaml is missing.
+Configuration is in an invalid state.
+
+Starting fresh initialization...
+```
+
+Delete orphaned mapping.yaml, continue to step 2.
+
+**Case D: Neither file exists (Fresh install):**
+
+Continue to step 2.
 
 ## 2. Verify acli Installation
 
@@ -312,12 +369,77 @@ Fetch project details with issue types:
 acli jira project view --key {PROJECT_KEY} --json
 ```
 
+**Handle API errors:**
+
+**If network error or timeout:**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSD ► JIRA INIT — API ERROR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Failed to fetch project details from Jira.
+
+**Error:** {error message}
+
+**Possible causes:**
+- Network connectivity issues
+- Jira API is temporarily unavailable
+- Rate limiting
+
+**Try again:**
+Run `/gsd:jira-init` to retry.
+```
+
+Exit command.
+
+**If JSON parse error:**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSD ► JIRA INIT — PARSE ERROR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Failed to parse Jira API response.
+
+This may indicate an incompatible acli version or API changes.
+
+**Troubleshooting:**
+1. Update acli: `brew upgrade jira-cli` or `go install github.com/ankitpokhrel/jira-cli/cmd/jira@latest`
+2. Verify raw output: `acli jira project view --key {PROJECT_KEY} --json`
+3. Report issue if persists
+
+Run `/gsd:jira-init` to retry after updating.
+```
+
+Exit command.
+
 **Parse JSON response:**
 
 Extract `issueTypes` array with:
 - `id` — Issue type ID
 - `name` — Issue type name (Epic, Story, Task, Sub-task, Initiative, Bug, etc.)
 - `subtask` — Boolean indicating if it's a subtask type
+
+**If issueTypes array is empty or missing:**
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ GSD ► JIRA INIT — NO ISSUE TYPES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+No issue types found for project {PROJECT_KEY}.
+
+This is unusual — most Jira projects have default issue types.
+
+**Check:**
+1. Project settings in Jira: {SITE_URL}/jira/software/projects/{PROJECT_KEY}/settings/issuetypes
+2. Your account permissions for this project
+
+Run `/gsd:jira-init` to retry after checking.
+```
+
+Exit command.
 
 **Build available types list:**
 
@@ -344,19 +466,37 @@ For each GSD entity:
 2. If not, use fallback type
 3. If fallback also missing, set to `null` (will error on sync)
 
-**If critical types missing:**
+**Display resolved mapping:**
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- GSD ► ISSUE TYPE WARNING
+ GSD ► ISSUE TYPE MAPPING
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Some required issue types are not available:
+Available issue types in {PROJECT_KEY}:
+{list of available types}
 
-| GSD Entity | Needed | Status |
-|------------|--------|--------|
-| [entity]   | [type] | MISSING |
-| ...        | ...    | ...     |
+| GSD Entity | Jira Type | Source   |
+|------------|-----------|----------|
+| Milestone  | {type}    | primary/fallback |
+| Phase      | {type}    | primary/fallback |
+| Plan       | {type}    | primary/fallback |
+| Task       | {type}    | primary/fallback |
+```
+
+**If any entity resolved to `null` (critical types missing):**
+
+```
+⚠ WARNING: Some required issue types are not available:
+
+| GSD Entity | Needed         | Status  |
+|------------|----------------|---------|
+| [entity]   | [primary type] | MISSING |
+| ...        | ...            | ...     |
+
+**Impact:**
+- Sync for missing types will be skipped
+- Related GSD entities won't appear in Jira
 
 **Options:**
 1. Add missing issue types in Jira project settings
@@ -370,12 +510,30 @@ Use AskUserQuestion:
   - "Continue" — Use available types, some features limited
   - "Exit" — Fix issue types in Jira first
 
+**If "Exit":**
+
+```
+**Add issue types in Jira:**
+
+1. Go to: {SITE_URL}/jira/software/projects/{PROJECT_KEY}/settings/issuetypes
+2. Click "Add issue type"
+3. Add: Story, Epic, Sub-task (minimum required)
+
+For Initiative (Advanced Roadmaps):
+- Requires Jira Premium or higher
+- Or use Epic as fallback for Milestones
+
+Run `/gsd:jira-init` after adding issue types.
+```
+
+Exit command.
+
 **Store resolved mapping:**
 - `available_types[]` — All issue types from project
-- `active.milestone` — Resolved type for milestones
-- `active.phase` — Resolved type for phases
-- `active.plan` — Resolved type for plans
-- `active.task` — Resolved type for tasks
+- `active.milestone` — Resolved type for milestones (or null)
+- `active.phase` — Resolved type for phases (or null)
+- `active.plan` — Resolved type for plans (or null)
+- `active.task` — Resolved type for tasks (or null)
 
 Continue to step 7.
 
