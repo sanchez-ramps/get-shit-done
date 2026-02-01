@@ -28,12 +28,10 @@ This roadmap delivers bidirectional sync between GSD workflow artifacts and Jira
   2. Mapping configuration exists in `.planning/jira/mapping.yaml`
   3. Project configuration exists in `.planning/jira/config.yaml`
   4. acli authentication is verified during init
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 01-01: Configuration schema and file structure
-- [ ] 01-02: CLI scaffold with gsd:jira-init command
-- [ ] 01-03: acli wrapper with error handling patterns
+- [ ] 01-01-PLAN.md — Create gsd:jira-init command with full init flow
 
 ### Phase 2: Push Sync
 **Goal**: Enable GSD → Jira push sync with automatic creation hooks and branch creation
@@ -133,7 +131,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Not started | - |
+| 1. Foundation | 0/1 | Not started | - |
 | 2. Push Sync | 0/4 | Not started | - |
 | 3. Execution Integration | 0/5 | Not started | - |
 | 4. Bidirectional Sync | 0/3 | Not started | - |
